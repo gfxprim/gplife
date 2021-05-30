@@ -81,11 +81,11 @@ void board_randomize(struct board *self)
 	}
 }
 
-static uint8_t rules_lookup[2][8] = {
+static uint8_t rules_lookup[2][9] = {
 	/* dead cell */
-	{0, 0, 0, 1, 0, 0, 0, 0},
+	{0, 0, 0, 1, 0, 0, 0, 0, 0},
 	/* alive cell */
-	{0, 0, 1, 1, 0, 0, 0, 0}
+	{0, 0, 1, 1, 0, 0, 0, 0, 0}
 };
 
 void board_tick(struct board *self)
