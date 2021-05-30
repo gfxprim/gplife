@@ -71,7 +71,7 @@
      },
      {
       "type": "button",
-      "label": "rand",
+      "btype": "randomize",
       "on_event": "randomize"
      },
      {
