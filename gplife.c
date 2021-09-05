@@ -125,7 +125,7 @@ void view_click(gp_event *ev)
 {
 	unsigned int bx, by;
 
-	if (!view_map(ev->cursor_x, ev->cursor_y, &bx, &by))
+	if (!view_map(ev->st->cursor_x, ev->st->cursor_y, &bx, &by))
 		return;
 
 	board_cell_set(board, bx, by, !board_cell_get(board, bx, by));
