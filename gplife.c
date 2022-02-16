@@ -263,7 +263,7 @@ int resize(gp_widget_event *ev)
 	if (ev->type != GP_WIDGET_EVENT_WIDGET)
 		return 0;
 
-	new = board_resize(board, gp_widget_int_get(w), gp_widget_int_get(h));
+	new = board_resize(board, gp_widget_int_val_get(w), gp_widget_int_val_get(h));
 	if (new)
 		board = new;
 
@@ -293,7 +293,7 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	board = board_new(gp_widget_int_get(w), gp_widget_int_get(h));
+	board = board_new(gp_widget_int_val_get(w), gp_widget_int_val_get(h));
 	if (!board) {
 		fprintf(stderr, "Malloc failed!\n");
 	}
