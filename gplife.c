@@ -280,9 +280,9 @@ int main(int argc, char *argv[])
 	view.pixmap = gp_widget_by_uid(uids, "board", GP_WIDGET_PIXMAP);
 
 	if (view.pixmap) {
+		gp_widget_on_event_set(view.pixmap, pixmap_on_event, NULL);
 		gp_widget_event_unmask(view.pixmap, GP_WIDGET_EVENT_REDRAW);
 		gp_widget_event_unmask(view.pixmap, GP_WIDGET_EVENT_INPUT);
-		gp_widget_event_handler_set(view.pixmap, pixmap_on_event, NULL);
 	}
 
 	w = gp_widget_by_cuid(uids, "w", GP_WIDGET_CLASS_INT);
