@@ -1,91 +1,36 @@
 {
- "version": 1,
- "rows": 2,
- "align": "fill",
- "rfill": "1, 0",
- "widgets": [
-  {
-   "align": "fill",
-   "type": "pixmap",
-   "uid": "board",
-   "w": 100,
-   "h": 100
-  },
-  {
-   "type": "frame",
-   "title": "Settings",
-   "halign": "fill",
-   "widget": {
-    "cols": 12,
+ "info": {"version": 1, "license": "GPL-2.1-or-later", "author": "Cyril Hrubis <metan@ucw.cz>"},
+ "layout": {
+  "rows": 2,
+  "align": "fill",
+  "rfill": "1, 0",
+  "widgets": [
+   {"align": "fill", "type": "pixmap", "uid": "board", "w": 100, "h": 100},
+   {
+    "type": "frame",
+    "title": "Settings",
     "halign": "fill",
-    "cfill": "12 * 0",
-    "cpadf": "1, 4*0, 1, 2*0, 1, 0, 1, 0, 1",
-    "widgets": [
-     {
-      "type": "label",
-      "text": "W"
-     },
-     {
-      "type": "spinner",
-      "min": 10,
-      "val": 50,
-      "max": 1000,
-      "uid": "w",
-      "on_event": "resize"
-     },
-     {
-      "type": "label",
-      "text": "x"
-     },
-     {
-      "type": "label",
-      "text": "H"
-     },
-     {
-      "type": "spinner",
-      "min": 10,
-      "val": 50,
-      "max": 1000,
-      "uid": "h",
-      "on_event": "resize"
-     },
-     {
-      "type": "button",
-      "label": "step",
-      "on_event": "step"
-     },
-     {
-      "type": "button",
-      "btype": "play",
-      "on_event": "run"
-     },
-     {
-      "type": "button",
-      "btype": "pause",
-      "on_event": "stop"
-     },
-     {
-      "type": "button",
-      "btype": "clear",
-      "on_event": "clear"
-     },
-     {
-      "type": "button",
-      "btype": "randomize",
-      "on_event": "randomize"
-     },
-     {
-      "type": "button",
-      "btype": "zoom_in",
-      "on_event": "zoom_in"
-     },
-     {
-      "type": "button",
-      "btype": "zoom_out",
-      "on_event": "zoom_out"
-     }
-    ]
+    "widget": {
+     "cols": 12,
+     "halign": "fill",
+     "cfill": "12 * 0",
+     "cpadf": "1, 4*0, 1, 2*0, 1, 0, 1, 0, 1",
+     "widgets": [
+      {"type": "label", "text": "W"},
+      {"type": "spinner", "min": 10, "val": 50, "max": 1000, "uid": "w", "on_event": "resize"},
+      {"type": "label", "text": "x"},
+      {"type": "label", "text": "H"},
+      {"type": "spinner", "min": 10, "val": 50, "max": 1000, "uid": "h", "on_event": "resize"},
+      {"type": "button", "btype": "step_forward", "on_event": "step"},
+      {"type": "button", "btype": "play", "on_event": "run"},
+      {"type": "button", "btype": "pause", "on_event": "stop"},
+      {"type": "button", "btype": "clear", "on_event": "clear"},
+      {"type": "button", "btype": "randomize", "on_event": "randomize"},
+      {"type": "button", "btype": "zoom_in", "on_event": "zoom_in"},
+      {"type": "button", "btype": "zoom_out", "on_event": "zoom_out"}
+     ]
+    }
    }
-  }
- ]
+  ]
+ }
 }
