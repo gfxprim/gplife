@@ -2,7 +2,7 @@
 
 /*
 
-    Copyright (C) 2007-2021 Cyril Hrubis <metan@ucw.cz>
+    Copyright (C) 2007-2022 Cyril Hrubis <metan@ucw.cz>
 
  */
 
@@ -25,13 +25,16 @@ static struct view {
 
 static gp_widget *w, *h;
 
-static void view_draw(gp_pixmap *pixmap)
+static void view_draw(gp_pixmap *pixmap, const gp_widget_render_ctx *ctx)
 {
-	gp_pixel white = gp_rgb_to_pixmap_pixel(0xff, 0xff, 0xff, pixmap);
-	gp_pixel black = gp_rgb_to_pixmap_pixel(0x00, 0x00, 0x00, pixmap);
-	gp_pixel gray = gp_rgb_to_pixmap_pixel(0xaa, 0xaa, 0xaa, pixmap);
+	gp_pixel bg = gp_rgb_to_pixmap_pixel(0xff, 0xff, 0xff, pixmap);
+	gp_pixel fg = gp_rgb_to_pixmap_pixel(0x00, 0x00, 0x00, pixmap);
+	gp_pixel fill = ctx->bg_color;
 
-	gp_fill(pixmap, gray);
+	if (gp_widgets_color_scheme_get() == GP_WIDGET_COLOR_SCHEME_DARK)
+		GP_SWAP(bg, fg);
+
+	gp_fill(pixmap, fill);
 
 	if (view.x_off >= board->w)
 		return;
@@ -51,9 +54,9 @@ static void view_draw(gp_pixmap *pixmap)
 	for (y = 0; y < h; y++) {
 		for (x = 0; x < w; x++) {
 			if (board_cell_get(board, x+view.x_off, y+view.y_off))
-				gp_fill_rect_xywh(pixmap, x_off + x*zoom, y_off + y*zoom, zoom, zoom, black);
+				gp_fill_rect_xywh(pixmap, x_off + x*zoom, y_off + y*zoom, zoom, zoom, fg);
 			else
-				gp_fill_rect_xywh(pixmap, x_off + x*zoom, y_off + y*zoom, zoom, zoom, white);
+				gp_fill_rect_xywh(pixmap, x_off + x*zoom, y_off + y*zoom, zoom, zoom, bg);
 		}
 	}
 }
@@ -159,7 +162,7 @@ static int pixmap_on_event(gp_widget_event *ev)
 {
 	switch (ev->type) {
 	case GP_WIDGET_EVENT_REDRAW:
-		view_draw(ev->self->pixmap->pixmap);
+		view_draw(ev->self->pixmap->pixmap, ev->ctx);
 		return 1;
 	case GP_WIDGET_EVENT_INPUT:
 		return view_input(ev);
