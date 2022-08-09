@@ -1,4 +1,4 @@
-//SPDX-License-Identifier: GPL-2.1-or-later
+//SPDX-License-Identifier: GPL-2.0-or-later
 
 /*
 
@@ -275,10 +275,25 @@ int resize(gp_widget_event *ev)
 	return 0;
 }
 
+static gp_app_info app_info = {
+	.name = "gplife",
+	.desc = "Conway's Game of Life",
+	.version = "1.0",
+	.license = "GPL-2.0-or-later",
+	.url = "http://github.com/gfxprim/gplife",
+	.authors = (gp_app_info_author []) {
+		{.name = "Cyril Hrubis", .email = "metan@ucw.cz", .years = "2007-2022"},
+		{}
+	}
+};
+
+
 int main(int argc, char *argv[])
 {
 	gp_htable *uids;
 	gp_widget *layout = gp_app_layout_load("gplife", &uids);
+
+	gp_app_info_set(&app_info);
 
 	view.pixmap = gp_widget_by_uid(uids, "board", GP_WIDGET_PIXMAP);
 
