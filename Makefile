@@ -17,7 +17,7 @@ install:
 	install -m 644 -D layout.json $(DESTDIR)/etc/gp_apps/$(BIN)/layout.json
 	install -D $(BIN) -t $(DESTDIR)/usr/bin/
 	install -d $(DESTDIR)/usr/share/applications/
-	install -m 744 $(BIN).desktop -t $(DESTDIR)/usr/share/applications/
+	install -m 644 $(BIN).desktop -t $(DESTDIR)/usr/share/applications/
 	install -d $(DESTDIR)/usr/share/$(BIN)/
 	install -m 644 $(BIN).png -t $(DESTDIR)/usr/share/$(BIN)/
 
