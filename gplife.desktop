@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=gplife
+GenericName=Game of Life
+Version=1.0
+Comment=Conway's Game of Life
+Exec=gplife
+Icon=/usr/share/gpife/gplife.png
+Terminal=false
+Type=Application
+Categories=Game;LogicGame
