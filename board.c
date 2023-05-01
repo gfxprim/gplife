@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <errno.h>
 #include "board.h"
 
 void board_clear(struct board *self)
@@ -31,6 +32,11 @@ struct board *board_new(unsigned int w, unsigned int h)
 	board_clear(ret);
 
 	return ret;
+}
+
+void board_free(struct board *self)
+{
+	free(self);
 }
 
 static inline size_t board_idx(struct board *self, unsigned int x, unsigned int y)
@@ -136,3 +142,149 @@ void board_print(struct board *self)
 	printf("\n");
 }
 
+static void write_cells(FILE *f, unsigned int cnt, uint8_t cell_state)
+{
+	if (!cnt)
+		return;
+
+	if (cnt > 1)
+		fprintf(f, "%u%c", cnt, cell_state ? 'o' : 'b');
+	else
+		fprintf(f, "%c", cell_state ? 'o' : 'b');
+}
+
+int board_save(struct board *self, const char *file_name)
+{
+	unsigned int y;
+	FILE *f = fopen(file_name, "w");
+
+	if (!f)
+		return -1;
+
+	fprintf(f, "x = %u, y = %u, rule = B3/S23\n", self->w, self->h);
+
+	for (y = 2; y < self->h+2; y++) {
+		unsigned int x = 1;
+		unsigned int prev_cell_x = 1;
+		uint8_t prev_cell = cell_get(self, x++, y);
+
+		if (y != 2)
+			fprintf(f, "$\n");
+
+		while (x < self->w+1) {
+			uint8_t cur_cell = cell_get(self, x, y);
+
+			if (cur_cell != prev_cell) {
+				write_cells(f, x - prev_cell_x, prev_cell);
+
+				prev_cell = cur_cell;
+				prev_cell_x = x;
+			}
+
+			x++;
+		}
+
+		write_cells(f, x - prev_cell_x, prev_cell);
+	}
+
+	fprintf(f, "!\n");
+
+	if (fclose(f))
+		return -1;
+
+	return 0;
+}
+
+static void safe_cell_set(struct board *board, unsigned int x, unsigned int y,
+                          unsigned int rpt)
+{
+	unsigned int i;
+
+	if (y < 2 || y >= board->h + 2)
+		return;
+
+	if (x < 1)
+		return;
+
+	for (i = 0; i < rpt; i++) {
+		if (x + i >= board->w + 1)
+			break;
+		cell_set(board, x+i, y, 1);
+	}
+}
+
+struct board *board_load(const char *file_name)
+{
+	FILE *f = fopen(file_name, "r");
+	struct board *ret = NULL;
+	unsigned int w = 0, h = 0;
+	int err = 0;
+
+	if (!f)
+		return NULL;
+
+	for (;;) {
+		int c = fgetc(f);
+
+		if (c == '#') {
+			do
+				c = fgetc(f);
+			while (c != '\n' && c != EOF);
+		} else {
+			ungetc(c, f);
+			break;
+		}
+	}
+
+	if (fscanf(f, "x = %u, y = %u %*[^\n]\n", &w, &h) != 2) {
+		err = EINVAL;
+		goto exit;
+	}
+
+	if (!w || !h) {
+		err = EINVAL;
+		goto exit;
+	}
+
+	ret = board_new(w, h);
+	if (!ret) {
+		err = ENOMEM;
+		goto exit;
+	}
+
+	unsigned int rpt = 0;
+	unsigned int y = 2, x = 1;
+	char c;
+
+	for (;;) {
+		switch ((c = fgetc(f))) {
+		case '0' ... '9':
+			rpt *= 10;
+			rpt += c - '0';
+		break;
+		case 'b':
+			rpt = rpt ? rpt : 1;
+			x += rpt;
+			rpt = 0;
+		break;
+		case 'o':
+			rpt = rpt ? rpt : 1;
+			safe_cell_set(ret, x, y, rpt);
+			x += rpt;
+			rpt = 0;
+		break;
+		case '$':
+			y++;
+			x = 1;
+		break;
+		case '!':
+		case EOF:
+			goto exit;
+		}
+	}
+
+exit:
+	errno = err;
+	fclose(f);
+	return ret;
+}

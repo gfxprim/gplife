@@ -2,12 +2,13 @@
 
 /*
 
-    Copyright (C) 2007-2022 Cyril Hrubis <metan@ucw.cz>
+    Copyright (C) 2007-2023 Cyril Hrubis <metan@ucw.cz>
 
  */
 
 #include <stdint.h>
 #include <string.h>
+#include <errno.h>
 #include <widgets/gp_widgets.h>
 
 #include "board.h"
@@ -263,6 +264,11 @@ int resize(gp_widget_event *ev)
 {
 	struct board *new;
 
+	if (ev->type == GP_WIDGET_EVENT_NEW) {
+		gp_widget_int_min_set(ev->self, 1);
+		gp_widget_int_max_set(ev->self, BOARD_SIZE_MAX);
+	}
+
 	if (ev->type != GP_WIDGET_EVENT_WIDGET)
 		return 0;
 
@@ -272,6 +278,57 @@ int resize(gp_widget_event *ev)
 
 	gp_widget_redraw(view.pixmap);
 
+	return 0;
+}
+
+int file_save(gp_widget_event *ev)
+{
+	if (ev->type != GP_WIDGET_EVENT_WIDGET)
+		return 0;
+
+	gp_dialog *file_save = gp_dialog_file_save_new(NULL, NULL);
+
+	if (gp_dialog_run(file_save) != GP_WIDGET_DIALOG_PATH)
+		return 0;
+
+	if (board_save(board, gp_dialog_file_path(file_save))) {
+		gp_dialog_msg_printf_run(GP_DIALOG_MSG_ERR,
+		                          "Failed to save file",
+				          "%s", strerror(errno));
+	}
+
+	gp_dialog_free(file_save);
+	return 0;
+}
+
+int file_open(gp_widget_event *ev)
+{
+	struct board *new;
+
+	if (ev->type != GP_WIDGET_EVENT_WIDGET)
+		return 0;
+
+	gp_dialog *file_open = gp_dialog_file_open_new(NULL, NULL);
+
+	if (gp_dialog_run(file_open) != GP_WIDGET_DIALOG_PATH)
+		return 0;
+
+	new = board_load(gp_dialog_file_path(file_open));
+	if (!new) {
+		gp_dialog_msg_printf_run(GP_DIALOG_MSG_ERR,
+		                          "Failed to load file",
+				          "%s", strerror(errno));
+	} else {
+		board_free(board);
+		board = new;
+
+		gp_widget_int_val_set(w, board->w);
+		gp_widget_int_val_set(h, board->h);
+
+		gp_widget_redraw(view.pixmap);
+	}
+
+	gp_dialog_free(file_open);
 	return 0;
 }
 
