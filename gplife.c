@@ -187,7 +187,7 @@ uint32_t sim_tmr_callback(gp_timer *self)
 	board_tick(board);
 	gp_widget_redraw(view.pixmap);
 
-	return 0;
+	return self->period;
 }
 
 static gp_timer sim_tmr = {
