@@ -332,7 +332,7 @@ int file_open(gp_widget_event *ev)
 	return 0;
 }
 
-static gp_app_info app_info = {
+gp_app_info app_info = {
 	.name = "gplife",
 	.desc = "Conway's Game of Life",
 	.version = "1.0",
@@ -349,8 +349,6 @@ int main(int argc, char *argv[])
 {
 	gp_htable *uids;
 	gp_widget *layout = gp_app_layout_load("gplife", &uids);
-
-	gp_app_info_set(&app_info);
 
 	view.pixmap = gp_widget_by_uid(uids, "board", GP_WIDGET_PIXMAP);
 
@@ -375,7 +373,7 @@ int main(int argc, char *argv[])
 
 	gp_htable_free(uids);
 
-	gp_widgets_main_loop(layout, "gplife", NULL, argc, argv);
+	gp_widgets_main_loop(layout, NULL, argc, argv);
 
 	return 0;
 }
