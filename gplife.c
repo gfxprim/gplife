@@ -163,7 +163,7 @@ static int pixmap_on_event(gp_widget_event *ev)
 {
 	switch (ev->type) {
 	case GP_WIDGET_EVENT_REDRAW:
-		view_draw(ev->self->pixmap->pixmap, ev->ctx);
+		view_draw(gp_widget_pixmap_get(ev->self), ev->ctx);
 		return 1;
 	case GP_WIDGET_EVENT_INPUT:
 		return view_input(ev);
