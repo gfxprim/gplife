@@ -201,7 +201,7 @@ int run(gp_widget_event *ev)
 	if (ev->type != GP_WIDGET_EVENT_WIDGET)
 		return 0;
 
-	gp_widgets_timer_ins(&sim_tmr);
+	gp_app_timer_start(&sim_tmr);
 
 	return 0;
 }
@@ -211,7 +211,7 @@ int stop(gp_widget_event *ev)
 	if (ev->type != GP_WIDGET_EVENT_WIDGET)
 		return 0;
 
-	gp_widgets_timer_rem(&sim_tmr);
+	gp_app_timer_stop(&sim_tmr);
 
 	return 0;
 }
